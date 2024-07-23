@@ -24,7 +24,7 @@ then
     curl -o non-root.py https://raw.githubusercontent.com/Ilya114/Box64Droid/main/installers/non-root.py && python3 non-root.py
 elif [ $version = 2 ]
 then
-    curl -o root.py https://raw.githubusercontent.com/Ilya114/Box64Droid/main/installers/root.py && python3 root.py
+    curl -o root.py https://raw.githubusercontent.com/nydal91/Box64Droid/main/installers/root.py && python3 root.py
 elif [ $version = 3 ]
 then
     curl -o virgl.py https://raw.githubusercontent.com/Ilya114/Box64Droid/main/installers/virgl.py && python3 virgl.py
