@@ -1,88 +1,44 @@
-# Box64Droid
-[![telegram](https://img.shields.io/badge/chat-telegram-brightgreen.svg?logo=telegram&style=flat-square)](https://t.me/box64droichat)
-[![discord](https://img.shields.io/discord/308323056592486420?logo=discord)](https://discord.gg/thjpZ4P7Bm)
+How to get chroot Ubuntu 24.10, box64 and wine to work on Android.
 
-Box64Droid is a project with scripts that automate installing preconfigured rootfs with [Box64](https://github.com/ptitSeb/box64), [Box86](https://github.com/ptitSeb/box86), [Wine Stable 8.0](https://github.com/Kron4ek/Wine-Builds), [DXVK](https://github.com/doitsujin/dxvk), [D8VK](https://github.com/AlpyneDreams/d8vk) on Android. Originally was a [fork](https://github.com/Ilya114/Box4Droid) of [Box4Droid](https://github.com/Herick75/Box4Droid) with Box64. The project site is available [here](https://ilya114.github.io).
+First follow this guide:
+https://ivonblog.com/en-us/posts/termux-chroot-ubuntu/
 
-Made by a guy from [Lysychansk](https://en.wikipedia.org/wiki/Lysychansk), [Luhansk region](https://en.wikipedia.org/wiki/Luhansk_Oblast) of Ukraine.
+Then install all this depends
 
-News about the project are published on the [Telegram](https://t.me/box64droidch) channel.
+sudo apt-get install -y  libc6 libglib2.0-0 libgphoto2-6 libgphoto2-port12 \
+		libgstreamer-plugins-base1.0-0 libgstreamer1.0-0  libopenal1 libpcap0.8 \
+		libpulse0 libsane1 libudev1 libunwind8 libusb-1.0-0 libvkd3d1 libx11-6 libxext6 \
+		ocl-icd-libopencl1 libasound2-plugins libncurses6 libcups2 \
+		libdbus-1-3 libfontconfig1 libfreetype6 libglu1-mesa libgnutls30 \
+		libgssapi-krb5-2 libkrb5-3  libosmesa6 libsdl2-2.0-0 libv4l-0 \
+		libxcomposite1 libxcursor1 libxfixes3 libxi6 libxinerama1 libxrandr2 \
+		libxrender1 libxxf86vm1 libc6 libcap2-bin libasound2t64 libldap-common libncurses6 libjpeg-turbo8 libodbc2
+sudo apt-get install v4l-utils
+sudo apt-get install winbind
+sudo apt-get install ubuntu-restricted-extras
+sudo apt install ffmpeg
+sudo 
+apt install pv pip libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
 
-README parts:
+Error
+sudo apt remove gstreamer1.0-plugins-bad
 
-- [Installation instructions](#installation-instructions)
-- [System requirements](#system-requirements)
-- [Configuring](#configuring)
-- [Known issues](#known-issues)
-- [Things to note](#things-to-note)
-- [Applications and scripts which were used in Box64Droid](#applications-and-scripts-which-were-used-in-box64droid)
+git clone https://github.com/ptitSeb/box64 &>/dev/null
+        echo "Building Box64..."
+        cd ~/box64
+        mkdir build; cd build; cmake .. -DARM_DYNAREC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBAD_SIGNAL=ON -DSD8G2=ON; make -j8; make install
+        rm -r ~/box64
 
-## Installation instructions
-1. Install [Termux](https://github.com/termux/termux-app/releases/download/v0.118.0/termux-app_v0.118.0+github-debug_arm64-v8a.apk) and [Termux-x11](https://github.com/Ilya114/Box64Droid/releases/download/stable/app-arm64-v8a-debug.apk).
-2. In Termux, run the Box64Droid install command: `curl -o install https://raw.githubusercontent.com/nydal91/Box64Droid/main/installers/install.sh && chmod +x install && ./install`
 
-After the installation is completed, run `box64droid --start`. The script will start Termux-X11 and show the start menu.
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:mastag/mesa-turnip-kgsl
+sudo apt update
+sudo apt-get install mesa-vulkan-drivers
 
-You can also use Input Bridge. Install apk version 0.1.9 and then simply run the app on Android and in Wine from the start menu.
+sudo apt install vulkan-tools
 
-## System requirements
+sudo apt install eget
 
-- Adreno 610+ (Other GPUs are supported by VirGL, but many games might not work)
-- Android 12+ (non-root, VirGL version), Android 10+ (root version), Android 9+ (native version)
-- 64-bit Android
-- You also need ~4,2GB (for root version), 4,5GB (for non-root version) or ~3,3GB (for VirGL version) worth of free space for the installation to run without problems.
+Wget https://raw.githubusercontent.com/nydal91/Box64droidconf/refs/heads/main/OverrideDlls.bat
 
-To increase performance and stability, use the root version (root access required) or the native version (less stable but offers the same performance as the root version).
-
-## Configuring
-
-You can choose to use environment variables; there are three files: `DXVK_D8VK.conf`, `Box64Droid.conf`, and `DXVK_D8VK.conf`. These files are created and found in the /sdcard/Box64Droid/ folder after the first Box64Droid run.
-
-The `Box64Droid.conf` file includes configurations for rootfs, Box86, Box64, and Wine. You can utilize the Box86 and Box64 environment variables; you can find more information about them [here](https://github.com/ptitSeb/box86/blob/master/docs/USAGE.md#) and [here](https://github.com/ptitSeb/box64/blob/main/docs/USAGE.md). You can add as many variables as needed.
-
-The `DXVK_D8VK_HUD.conf` file is intended for using environment variables related to [DXVK_HUD](https://github.com/doitsujin/dxvk#hud).
-
-The `DXVK_D8VK.conf` file is intended for using environment variables related to [dxvk](https://github.com/doitsujin/dxvk/blob/master/dxvk.conf).
-
-## Known issues
-
-- Error occurs when updating Termux packages. Clearing Termux data can resolve this issue.
-- Android 12+ may terminate Termux, displaying `[Process completed (signal 9) - press Enter]`. To resolve this, execute the following command in adb shell from your PC: `adb shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"`.
-- Winetricks takes a long time to run when Proton is installed (non-root version).
-
-## Instructions on how to mount SD-card external HDD/SSD (chroot version only)
-
-If you want to mount an SD card or an external drive (HDD/SSD), you need to add the mountpoint manually. Follow these steps:
-
-1. Mount the drive onto the phone storage:
-   - For an SD card, navigate to `/storage` and check the folders (using `sudo ls`), for example, `8D3E-2B7K`.
-   - For external drives, navigate to `/mnt/media_rw` and check for a folder like `C3G3H6B8A56212H7`.
-2. Mount the drive into the chroot envrionment:
-   - Type `nano $PREFIX/bin/box64droid` and add the mount command before the `sudo chroot login ...` line: `sudo mount --bind /mnt/media_rw/drivename (or /storage/sdcardname) $ROOTFSPATH/needfolder`.
-   - You need to manually create `needfolder` in the `~/ubuntu` folder by using `sudo mkdir foldername`.
-
-## Things to note
-
-Using Box86 and Box64 in a proot environment can lead to some issues and instabilities. Therefore, it's not recommended to use them for debugging or testing purposes; there are better options available.
-
-## Applications and scripts which were used in Box64Droid
-- [Termux-app](https://github.com/termux/termux-app) - GPLv3 license
-- [Box64 by ptitseb](https://github.com/ptitSeb/box64) - MIT license
-- [Box86 by ptitseb](https://github.com/ptitSeb/box86) - MIT license
-- [Wine Stable, Staging and Staging-tkg GPL-2.1 license](https://wiki.winehq.org/Licensing) (builded by [Kron4ek](https://github.com/Kron4ek) by MIT License), [Wine Proton by Valve](https://github.com/ValveSoftware/Proton) (own license), [Wine GE](https://github.com/GloriousEggroll/wine-ge-custom) (using in Lutris)
-- [Mesa](https://docs.mesa3d.org/license.html) - MIT, Khronos, SGI Free Software License B and Boost (permissive) licenses
-- [Termux-x11](https://github.com/termux/termux-x11) - GPL-3.0 license
-- [DXVK](https://github.com/doitsujin/dxvk) - Zlib license
-- [Proot-distro](https://github.com/termux/proot-distro) - GPL-3.0 license
-- [Forked Mesa to work Turnip on Adreno 730 and 740](https://gitlab.freedesktop.org/Danil/mesa/-/tree/turnip/feature/a7xx-basic-support)
-- [D8VK](https://github.com/AlpyneDreams/d8vk) - Zlib license
-- [DXVK-Async](https://github.com/Sporif/dxvk-async)
-- [DXVK-GPLAsync](https://gitlab.com/Ph42oN/dxvk-gplasync)
-- [WineD3D for Windows](https://fdossena.com/?p=wined3d/index.frag) - GPL-2.0+ license
-- [Winetricks](https://wiki.winehq.org/Winetricks)
-- [vkd3d-proton](https://github.com/HansKristian-Work/vkd3d-proton) - LGPL v2.1 license
-
-## Thanks to:
-- [Herick75](https://github.com/Herick75) - for providing patches that made compiling Mesa Turnip possible
-- [Inguna87](https://github.com/inguna87) - for start chroot fix for MIUI and Oxygen
-- [Alfhashut](https://github.com/alfhashut) - inspired me to try VirGL again and tried to help me with it
+box64 wine OverrideDlls.bat
